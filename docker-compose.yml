@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - APP_ENV=${APP_ENV}
+    container_name: app
+    volumes:
+      - .:/var/www/html:cached
+      - composer:/root/.composer:delegated
+      - npm:/root/.npm:delegated
+    ports:
+      - 8000:80
+
+volumes:
+  composer:
+    name: composer
+  npm:
+    name: npm
