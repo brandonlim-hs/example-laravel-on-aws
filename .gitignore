@@ -1,12 +1,20 @@
-/node_modules
-/public/hot
-/public/storage
-/storage/*.key
+# composer
 /vendor
-.env
-.env.backup
-.phpunit.result.cache
-Homestead.json
-Homestead.yaml
+
+# npm
+/node_modules
 npm-debug.log
-yarn-error.log
+
+# generated public files
+/public/build
+/public/css
+/public/hot
+/public/js
+/public/mix-manifest.json
+/public/storage
+
+# Laravel
+/storage/*.key
+.env*
+!.env.example
+.phpunit.result.cache
