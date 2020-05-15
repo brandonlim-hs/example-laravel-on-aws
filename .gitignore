@@ -18,3 +18,8 @@ npm-debug.log
 .env*
 !.env.example
 .phpunit.result.cache
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
