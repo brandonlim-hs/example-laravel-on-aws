@@ -5,8 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        - APP_ENV=${APP_ENV}
+      target: dev
     container_name: app
     volumes:
       - .:/var/www/html:cached
