@@ -4,6 +4,11 @@
 # https://stackoverflow.com/questions/61518512/aws-elastic-beanstalk-docker-does-not-support-multi-stage-build
 
 DOCKERFILE="$PWD/Dockerfile"
+TMP_FILE="$PWD/tmp_file"
+
+# Remove dev stage
+sed -n '/^FROM prod AS dev/q;p' $DOCKERFILE > $TMP_FILE && mv $TMP_FILE $DOCKERFILE
+
 # Find all named stages from the Dockerfile
 NAMED_STAGES=$(sed -n 's/FROM .* AS \(\w*\)/\1/p' $DOCKERFILE)
 
@@ -30,8 +35,6 @@ string_replace_dockerfile() {
         esac
         shift
     done
-
-    local TMP_FILE="$PWD/tmp_file"
 
     # Replace "$SEARCH" with "$REPLACE" and save to tmp file
     # Partial match like "$SEARCH"X is not replaced
