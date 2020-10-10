@@ -10,7 +10,7 @@ Example project that deploys a Laravel application on AWS via Elastic Beanstalk.
 
 2. Start Docker containers
 
-    `docker-compose up -d`
+    `docker-compose -f docker-compose.yml -f docker-compose.local.yml up -d`
 
 3. Compile PHP and JS
 

@@ -1,42 +1,9 @@
-version: '3.8'
+version: "3.8"
 
 services:
   app:
     build:
       context: .
       dockerfile: Dockerfile
-      target: dev
+      target: prod
     container_name: app
-    volumes:
-      - .:/var/www/html:cached
-      - composer:/root/.composer:delegated
-      - npm:/root/.npm:delegated
-    ports:
-      - 8000:80
-    networks:
-      - network
-
-  mysql:
-    image: mysql:${MYSQL_VERSION}
-    container_name: mysql
-    environment:
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-    volumes:
-      - mysql:/var/lib/mysql:delegated
-    ports:
-      - 3306:3306
-    networks:
-      - network
-
-networks:
-  network:
-
-volumes:
-  composer:
-    name: composer
-  mysql:
-  npm:
-    name: npm
