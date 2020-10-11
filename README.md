@@ -38,7 +38,7 @@ Example project that deploys a Laravel application on AWS via Elastic Beanstalk.
         php artisan db:seed
         ```
 
-5. Access Laravel application at http://localhost:8000
+5. Access Laravel application at http://localhost:80
 
 ### AWS Deployment
 

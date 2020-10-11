@@ -7,3 +7,14 @@ services:
       dockerfile: Dockerfile
       target: prod
     container_name: app
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: nginx
+    container_name: web
+    depends_on:
+      - app
+    ports:
+      - 80:80

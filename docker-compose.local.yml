@@ -8,8 +8,13 @@ services:
       - .:/var/www/html:cached
       - composer:/root/.composer:delegated
       - npm:/root/.npm:delegated
-    ports:
-      - 8000:80
+    networks:
+      - network
+
+  web:
+    volumes:
+      - .:/var/www/html:ro
+      - .docker/nginx/conf.d:/etc/nginx/conf.d:ro
     networks:
       - network
 

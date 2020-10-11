@@ -35,16 +35,10 @@ RUN mkdir -p public && npm install && npm run prod
 # Production application
 ###########################################################
 
-FROM php:7.4-apache AS prod
+FROM php:7.4-fpm AS prod
 # install PHP extensions
 RUN docker-php-ext-install \
     pdo_mysql
-# update apache configs to point to Laravel's public sub-directory as document root
-ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf \
-    && sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
-# mod_rewrite for URL rewrite and mod_headers for .htaccess extra headers like Access-Control-Allow-Origin-
-RUN a2enmod rewrite headers
 # add project files
 WORKDIR /var/www/html
 COPY . ./
@@ -52,10 +46,15 @@ COPY --from=composer /app/vendor/ ./vendor/
 COPY --from=node /app/public/js/ ./public/js/
 COPY --from=node /app/public/css/ ./public/css/
 COPY --from=node /app/mix-manifest.json ./mix-manifest.json
+# configure non-root user
+RUN groupmod -o -g 1000 www-data && \
+    usermod -o -u 1000 -g www-data www-data
 RUN chown -R www-data:www-data ./
-# expose port 80 and start apache
-EXPOSE 80
-CMD ["apache2-foreground"]
+# change current user to www-data
+USER www-data
+# expose port 9000 and start php-fpm server
+EXPOSE 9000
+CMD ["php-fpm"]
 
 ###########################################################
 # Development application
@@ -63,6 +62,7 @@ CMD ["apache2-foreground"]
 
 FROM prod AS dev
 # install Linux packages
+USER root
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -73,6 +73,17 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - \
     && apt-get update && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
+# change current user to www-data
+USER www-data
 
-# make prod the default stage
-FROM prod
+###########################################################
+# Nginx web server
+###########################################################
+
+FROM nginx:alpine AS nginx
+# remove default configuration
+RUN rm /etc/nginx/conf.d/default.conf
+# copy configuration
+COPY .docker/nginx/conf.d/ /etc/nginx/conf.d/
+# copy project files
+COPY --from=prod /var/www/html /var/www/html
