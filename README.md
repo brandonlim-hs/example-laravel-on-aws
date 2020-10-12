@@ -59,5 +59,3 @@ Post deploy script is used to perform database migrations after every deployment
 ### Docker
 
 This example uses [multi-stage Dockerfile](https://docs.docker.com/develop/develop-images/multistage-build/) to allow the local environment to mimic the production environment as much as possible.
-
-At time of writing, named multi-stage Dockerfile is yet to be supported by AWS Elastic Beanstalk. A workaround is introduced to removed named stages during the AWS Elastic Beanstalk pre-build stage. See: `.platform/hooks/prebuild/01_dockerfile_compatibility.sh`
