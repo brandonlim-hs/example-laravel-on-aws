@@ -1,0 +1,10 @@
+version: "3.8"
+
+services:
+  app:
+    volumes:
+      - "${EB_LOG_BASE_DIR}/app:/var/www/html/storage/logs"
+
+  web:
+    volumes:
+      - "${EB_LOG_BASE_DIR}/web:/var/log/nginx"
