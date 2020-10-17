@@ -85,3 +85,6 @@ RUN rm /etc/nginx/conf.d/default.conf
 COPY .docker/nginx/conf.d/ /etc/nginx/conf.d/
 # copy project files
 COPY --from=prod /var/www/html /var/www/html
+# create healthd directory
+RUN mkdir -p /var/log/nginx/healthd \
+    && chmod 777 /var/log/nginx/healthd

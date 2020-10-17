@@ -8,3 +8,4 @@ services:
   web:
     volumes:
       - "${EB_LOG_BASE_DIR}/web:/var/log/nginx"
+      - "/var/log/nginx/healthd:/var/log/nginx/healthd"
