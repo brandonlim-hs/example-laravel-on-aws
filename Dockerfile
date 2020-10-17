@@ -73,8 +73,6 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - \
     && apt-get update && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
-# change current user to www-data
-USER www-data
 
 ###########################################################
 # Nginx web server
