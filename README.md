@@ -59,3 +59,12 @@ Post deploy script is used to perform database migrations after every deployment
 ### Docker
 
 This example uses [multi-stage Dockerfile](https://docs.docker.com/develop/develop-images/multistage-build/) to allow the local environment to mimic the production environment as much as possible.
+
+| Docker compose file                               | Description                                    |
+| ------------------------------------------------- | ---------------------------------------------- |
+| `.docker/docker-compose/docker-compose.local.yml` | Local development Docker compose file          |
+| `.docker/docker-compose/docker-compose.eb.yml`    | Elastic Beanstalk specific Docker compose file |
+
+### Logs
+
+Docker volumes are used to allow logs from Laravel application and Nginx web server to be retrieved from Elastic Beanstalk instance. See: `.docker/docker-compose/docker-compose.eb.yml`
