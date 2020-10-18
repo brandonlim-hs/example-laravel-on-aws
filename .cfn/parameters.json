@@ -1,0 +1,22 @@
+[
+  {
+    "ParameterKey": "EBAppDescription",
+    "ParameterValue": "Laravel application deployed with AWS Elastic Beanstalk"
+  },
+  {
+    "ParameterKey": "EBAppName",
+    "ParameterValue": "laravel-app"
+  },
+  {
+    "ParameterKey": "EBEnvDescription",
+    "ParameterValue": "Laravel application production environment"
+  },
+  {
+    "ParameterKey": "EBEnvName",
+    "ParameterValue": "laravel-app-prod"
+  },
+  {
+    "ParameterKey": "EBEnvSolutionStackName",
+    "ParameterValue": "64bit Amazon Linux 2 v3.2.0 running Docker"
+  }
+]

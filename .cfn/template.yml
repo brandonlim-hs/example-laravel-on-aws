@@ -1,0 +1,53 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Parameters:
+  EBAppDescription:
+    Type: String
+    Description: The description for the Elastic Beanstalk application.
+
+  EBAppName:
+    Type: String
+    Description: The name for the Elastic Beanstalk application.
+
+  EBEnvDescription:
+    Type: String
+    Description: The description for the Elastic Beanstalk environment.
+
+  EBEnvName:
+    Type: String
+    Description: The name for the Elastic Beanstalk environment.
+
+  EBEnvSolutionStackName:
+    Type: String
+    Description: The name of an Elastic Beanstalk solution stack (platform version) to use with the environment.
+
+Resources:
+  EBApplication:
+    Type: AWS::ElasticBeanstalk::Application
+    Properties:
+      ApplicationName: !Ref EBAppName
+      Description: !Ref EBAppDescription
+
+  EBEnvironment:
+    Type: AWS::ElasticBeanstalk::Environment
+    Properties:
+      ApplicationName: !Ref EBApplication
+      Description: !Ref EBEnvDescription
+      EnvironmentName: !Ref EBEnvName
+      OptionSettings:
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: IamInstanceProfile
+          Value: aws-elasticbeanstalk-ec2-role
+        - Namespace: aws:autoscaling:updatepolicy:rollingupdate
+          OptionName: RollingUpdateEnabled
+          Value: "false"
+        - Namespace: aws:elasticbeanstalk:command
+          OptionName: DeploymentPolicy
+          Value: Immutable
+        - Namespace: aws:elasticbeanstalk:environment
+          OptionName: EnvironmentType
+          Value: LoadBalanced
+        - Namespace: aws:elasticbeanstalk:environment
+          OptionName: ServiceRole
+          Value: aws-elasticbeanstalk-service-role
+      SolutionStackName: !Ref EBEnvSolutionStackName
