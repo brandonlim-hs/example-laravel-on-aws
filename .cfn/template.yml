@@ -21,6 +21,10 @@ Parameters:
     Type: String
     Description: The name of an Elastic Beanstalk solution stack (platform version) to use with the environment.
 
+  ParameterPath:
+    Type: String
+    Description: The parameter path that the instance role has permission to.
+
 Resources:
   EBApplication:
     Type: AWS::ElasticBeanstalk::Application
@@ -37,7 +41,7 @@ Resources:
       OptionSettings:
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: IamInstanceProfile
-          Value: aws-elasticbeanstalk-ec2-role
+          Value: !Ref InstanceProfile
         - Namespace: aws:autoscaling:updatepolicy:rollingupdate
           OptionName: RollingUpdateEnabled
           Value: "false"
@@ -51,3 +55,50 @@ Resources:
           OptionName: ServiceRole
           Value: aws-elasticbeanstalk-service-role
       SolutionStackName: !Ref EBEnvSolutionStackName
+
+  InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref InstanceProfileRole
+
+  # IAM Instance Role that can access parameter store
+  InstanceProfileRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action:
+              - sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+        Version: 2012-10-17
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSElasticBeanstalkMulticontainerDocker
+        - arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier
+        - arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier
+      Policies:
+        - PolicyName: CloudWatchLogs
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:DescribeLogGroups
+                  - logs:DescribeLogStreams
+                  - logs:GetLogEvents
+                  - logs:PutLogEvents
+                  - logs:PutRetentionPolicy
+                Resource: "*"
+        - PolicyName: ParameterStore
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ssm:GetParametersByPath
+                Resource: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${ParameterPath}"

@@ -18,5 +18,9 @@
   {
     "ParameterKey": "EBEnvSolutionStackName",
     "ParameterValue": "64bit Amazon Linux 2 v3.2.0 running Docker"
+  },
+  {
+    "ParameterKey": "ParameterPath",
+    "ParameterValue": "Laravel/*"
   }
 ]
