@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Get environment variables from AWS System Manager Parameter Store
-# And create .env from the environment variables.
+# And create .env.parameter_store from the environment variables.
 aws ssm get-parameters-by-path \
   --path /Laravel/ \
   --region us-east-1 \
@@ -10,4 +10,4 @@ aws ssm get-parameters-by-path \
   --query "Parameters[].[Name,Value]" |
   sed 's/^\/Laravel\///g' |
   sed 's/\t/=/g' \
-    >.env
+    >.env.parameter_store

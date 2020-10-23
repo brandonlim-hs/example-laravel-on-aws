@@ -69,7 +69,12 @@ This example uses [multi-stage Dockerfile](https://docs.docker.com/develop/devel
 
 ### Environment Variables
 
-This example uses AWS System Manager Parameter Store to manage environment variables. Environment variables added to Elastic Beanstalk's option settings are ignored.
+This example uses AWS System Manager Parameter Store to manage environment variables.
+Environment variables added to Elastic Beanstalk's option settings are merged with environment variables from Parameter Store.
+The priority of environment variables are:
+
+1. Environment variables added to Elastic Beanstalk's option settings
+2. Environment variables from Parameter Store
 
 A pre-build script is used to get environment variables from Parameter Store and saves them to .env file. See: `.platform/hooks/prebuild/02_environment_variables.sh`
 
