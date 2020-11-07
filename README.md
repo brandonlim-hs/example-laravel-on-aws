@@ -48,7 +48,7 @@ Example project that deploys a Laravel application on AWS via Elastic Beanstalk.
 
 3. Create AWS Elastic Beanstalk application and environment
 
-    `aws cloudformation create-stack --stack-name {stack-name} --template-body file://.cfn/template.yml --parameters file://.cfn/parameters.json --capabilities CAPABILITY_NAMED_IAM`
+    `aws cloudformation create-stack --stack-name {stack-name} --template-body file://.cfn/eb.yml --parameters file://.cfn/eb-parameters.json --capabilities CAPABILITY_NAMED_IAM`
 
 4. Update AWS Elastic Beanstalk configurations
 
