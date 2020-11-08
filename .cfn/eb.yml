@@ -1,5 +1,9 @@
 AWSTemplateFormatVersion: 2010-09-09
 
+Description:
+  This template deploys an Elastic Beanstalk application, with an Elastic Beanstalk environment.
+  The environment is configured to use an Instance Profile that has access to Parameter Store.
+
 Parameters:
   EBAppDescription:
     Type: String
