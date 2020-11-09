@@ -42,19 +42,27 @@ Example project that deploys a Laravel application on AWS via Elastic Beanstalk.
 
 ### AWS Deployment
 
-1. Create AWS RDS
+1. Create AWS VPC
 
-2. Add environment variables to AWS System Manager Parameter Store. The parameter names should begin with `/Laravel/`
+    1. Update parameters in `vpc-parameters.json`
 
-3. Create AWS Elastic Beanstalk application and environment
+    2. Create AWS VPC
 
-    `aws cloudformation create-stack --stack-name {stack-name} --template-body file://.cfn/eb.yml --parameters file://.cfn/eb-parameters.json --capabilities CAPABILITY_NAMED_IAM`
+        `aws cloudformation create-stack --stack-name {vpc-stack-name} --template-body file://.cfn/vpc.yml --parameters file://.cfn/vpc-parameters.json`
 
-4. Update AWS Elastic Beanstalk configurations
+2. Create AWS RDS
+
+3. Add environment variables to AWS System Manager Parameter Store. The parameter names should begin with `/Laravel/`
+
+4. Create AWS Elastic Beanstalk application and environment
+
+    `aws cloudformation create-stack --stack-name {eb-stack-name} --template-body file://.cfn/eb.yml --parameters file://.cfn/eb-parameters.json --capabilities CAPABILITY_NAMED_IAM`
+
+5. Update AWS Elastic Beanstalk configurations
 
     1. Add RDS security group
 
-5. Create AWS CodePipeline to deploy code to AWS Elastic Beanstalk
+6. Create AWS CodePipeline to deploy code to AWS Elastic Beanstalk
 
 ## More
 
