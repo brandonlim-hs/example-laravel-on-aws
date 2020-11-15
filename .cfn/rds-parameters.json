@@ -1,0 +1,22 @@
+[
+  {
+    "ParameterKey": "VPCStackName",
+    "ParameterValue": "REPLACE_ME_VPC_STACK_NAME"
+  },
+  {
+    "ParameterKey": "EnvironmentName",
+    "ParameterValue": "laravel-rds"
+  },
+  {
+    "ParameterKey": "RDSDBName",
+    "ParameterValue": "laravel"
+  },
+  {
+    "ParameterKey": "RDSMasterUsername",
+    "ParameterValue": "admin"
+  },
+  {
+    "ParameterKey": "RDSMasterUserPassword",
+    "ParameterValue": "REPLACE_ME_MASTER_USER_PASSWORD"
+  }
+]

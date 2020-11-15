@@ -52,6 +52,12 @@ Example project that deploys a Laravel application on AWS via Elastic Beanstalk.
 
 2. Create AWS RDS
 
+    1. Update parameters in `rds-parameters.json`
+
+    2. Create AWS RDS
+
+        `aws cloudformation create-stack --stack-name {rds-stack-name} --template-body file://.cfn/rds.yml --parameters file://.cfn/rds-parameters.json`
+
 3. Add environment variables to AWS System Manager Parameter Store. The parameter names should begin with `/Laravel/`
 
 4. Create AWS Elastic Beanstalk application and environment

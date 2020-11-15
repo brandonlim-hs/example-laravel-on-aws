@@ -1,0 +1,131 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description:
+  This template deploys a MySQL RDS on the private subnets of the VPC. It deploys a Security Group
+  that allow access from the same Security Group.
+
+Parameters:
+  VPCStackName:
+    Type: String
+    Description: The name of the CloudFormation stack for VPC.
+
+  EnvironmentName:
+    Type: String
+    Description: An environment name that is prefixed to resource names.
+    AllowedPattern: "[a-zA-Z][a-zA-Z0-9-]*"
+    ConstraintDescription: Must begin with a letter and contain only alphanumeric or dash characters.
+
+  RDSAllocatedStorage:
+    Type: Number
+    Description: The size of the database (GB).
+    Default: 20
+    MinValue: 20
+    MaxValue: 65536
+    ConstraintDescription: See AWS RDS documentation for the different constraint range for each specific database engine.
+
+  RDSBackupRetentionPeriod:
+    Type: Number
+    Description: The number of days for which automated backups are retained.
+    Default: 1
+    MinValue: 0
+    MaxValue: 35
+    ConstraintDescription: Must be between 0 and 35 days.
+
+  RDSDBInstanceClass:
+    Type: String
+    Description: The compute and memory capacity of the DB instance.
+    Default: db.t2.small #db.t2.micro does not support encryption at rest
+
+  RDSDBName:
+    Type: String
+    Description: The name of the database to create when the DB instance is created.
+    MinLength: 1
+    MaxLength: 64
+    AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
+    ConstraintDescription: Must begin with a letter and contain only alphanumeric characters.
+
+  RDSMasterUsername:
+    Type: String
+    Description: The username for MySQL database access.
+    NoEcho: true
+    MinLength: 1
+    MaxLength: 16
+    AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
+    ConstraintDescription: Must begin with a letter and contain only alphanumeric characters.
+
+  RDSMasterUserPassword:
+    Type: String
+    Description: The password for MySQL database access.
+    NoEcho: true
+    MinLength: 8
+    MaxLength: 41
+    AllowedPattern: "[a-zA-Z0-9]*"
+    ConstraintDescription: Must contain only alphanumeric characters.
+
+  RDSMaxAllocatedStorage:
+    Type: Number
+    Description: The upper limit to which Amazon RDS can automatically scale the storage of the DB instance.
+    Default: 40
+    MinValue: 21
+    MaxValue: 16384
+    ConstraintDescription: See AWS RDS documentation for the different constraint range for each specific database engine.
+
+Resources:
+  SubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: Collection of private subnets
+      DBSubnetGroupName: !Sub ${EnvironmentName} Subnet Group
+      SubnetIds:
+        !Split [",", Fn::ImportValue: !Sub "${VPCStackName}-PrivateSubnets"]
+
+  RDSSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: !Sub ${EnvironmentName} Security Group to allow access from same Security Group
+      GroupName: !Sub ${EnvironmentName}-sg
+      SecurityGroupEgress:
+        - CidrIp: 0.0.0.0/0
+          FromPort: 3306
+          IpProtocol: tcp
+          ToPort: 3306
+      VpcId:
+        Fn::ImportValue: !Sub ${VPCStackName}-VPC
+
+  RDSSecurityGroupInboundRule:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      FromPort: 3306
+      GroupId: !Ref RDSSecurityGroup
+      IpProtocol: tcp
+      ToPort: 3306
+      SourceSecurityGroupId: !Ref RDSSecurityGroup
+
+  RDS:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      AllocatedStorage: !Ref RDSAllocatedStorage
+      AutoMinorVersionUpgrade: true
+      BackupRetentionPeriod: !Ref RDSBackupRetentionPeriod
+      DBInstanceClass: !Ref RDSDBInstanceClass
+      DBName: !Ref RDSDBName
+      DBSubnetGroupName: !Ref SubnetGroup
+      DeleteAutomatedBackups: false
+      DeletionProtection: true
+      Engine: mysql
+      MasterUsername: !Ref RDSMasterUsername
+      MasterUserPassword: !Ref RDSMasterUserPassword
+      MaxAllocatedStorage: !Ref RDSMaxAllocatedStorage
+      MultiAZ: true
+      StorageEncrypted: true
+      StorageType: gp2
+      VPCSecurityGroups:
+        - !Ref RDSSecurityGroup
+    DeletionPolicy: Retain
+
+Outputs:
+  SecurityGroup:
+    Description: A reference to the RDS security group
+    Value: !Ref RDSSecurityGroup
+    Export:
+      Name: !Sub ${AWS::StackName}-SecurityGroup
