@@ -48,7 +48,7 @@ Example project that deploys a Laravel application on AWS via Elastic Beanstalk.
 
     2. Create AWS VPC
 
-        `aws cloudformation create-stack --stack-name {vpc-stack-name} --template-body file://.cfn/vpc.yml --parameters file://.cfn/vpc-parameters.json`
+        `aws cloudformation create-stack --stack-name REPLACE_ME_VPC_STACK_NAME --template-body file://.cfn/vpc.yml --parameters file://.cfn/vpc-parameters.json`
 
 2. Create AWS RDS
 
@@ -56,7 +56,7 @@ Example project that deploys a Laravel application on AWS via Elastic Beanstalk.
 
     2. Create AWS RDS
 
-        `aws cloudformation create-stack --stack-name {rds-stack-name} --template-body file://.cfn/rds.yml --parameters file://.cfn/rds-parameters.json`
+        `aws cloudformation create-stack --stack-name REPLACE_ME_RDS_STACK_NAME --template-body file://.cfn/rds.yml --parameters file://.cfn/rds-parameters.json`
 
 3. Add environment variables to AWS System Manager Parameter Store. The parameter names should begin with `/Laravel/`
 
@@ -66,7 +66,7 @@ Example project that deploys a Laravel application on AWS via Elastic Beanstalk.
 
     2. Create AWS Elastic Beanstalk application and environment
 
-        `aws cloudformation create-stack --stack-name {eb-stack-name} --template-body file://.cfn/eb.yml --parameters file://.cfn/eb-parameters.json --capabilities CAPABILITY_NAMED_IAM`
+        `aws cloudformation create-stack --stack-name REPLACE_ME_EB_STACK_NAME --template-body file://.cfn/eb.yml --parameters file://.cfn/eb-parameters.json --capabilities CAPABILITY_NAMED_IAM`
 
 5. Create AWS CodePipeline to deploy code to AWS Elastic Beanstalk
 
