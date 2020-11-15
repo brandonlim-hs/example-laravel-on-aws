@@ -5,6 +5,14 @@ Description:
   The environment is configured to use an Instance Profile that has access to Parameter Store.
 
 Parameters:
+  VPCStackName:
+    Type: String
+    Description: The name of the CloudFormation stack for VPC.
+
+  RDSStackName:
+    Type: String
+    Description: The name of the CloudFormation stack for RDS.
+
   EBAppDescription:
     Type: String
     Description: The description for the Elastic Beanstalk application.
@@ -46,9 +54,25 @@ Resources:
         - Namespace: aws:autoscaling:launchconfiguration
           OptionName: IamInstanceProfile
           Value: !Ref InstanceProfile
-        - Namespace: aws:autoscaling:updatepolicy:rollingupdate
-          OptionName: RollingUpdateEnabled
-          Value: "false"
+        - Namespace: aws:autoscaling:launchconfiguration
+          OptionName: SecurityGroups
+          Value:
+            Fn::ImportValue: !Sub ${RDSStackName}-SecurityGroup
+        - Namespace: aws:ec2:vpc
+          OptionName: VPCId
+          Value:
+            Fn::ImportValue: !Sub ${VPCStackName}-VPC
+        - Namespace: aws:ec2:vpc
+          OptionName: AssociatePublicIpAddress
+          Value: true
+        - Namespace: aws:ec2:vpc
+          OptionName: ELBSubnets
+          Value:
+            Fn::ImportValue: !Sub ${VPCStackName}-PublicSubnets
+        - Namespace: aws:ec2:vpc
+          OptionName: Subnets
+          Value:
+            Fn::ImportValue: !Sub ${VPCStackName}-PublicSubnets
         - Namespace: aws:elasticbeanstalk:command
           OptionName: DeploymentPolicy
           Value: Immutable

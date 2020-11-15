@@ -1,5 +1,13 @@
 [
   {
+    "ParameterKey": "VPCStackName",
+    "ParameterValue": "REPLACE_ME_VPC_STACK_NAME"
+  },
+  {
+    "ParameterKey": "RDSStackName",
+    "ParameterValue": "REPLACE_ME_RDS_STACK_NAME"
+  },
+  {
     "ParameterKey": "EBAppDescription",
     "ParameterValue": "Laravel application deployed with AWS Elastic Beanstalk"
   },
